@@ -40,6 +40,7 @@ class TracyExtension extends Nette\DI\CompilerExtension
 			'fromEmail' => Expect::email()->dynamic(),
 			'emailSnooze' => Expect::string()->dynamic(),
 			'logSeverity' => Expect::anyOf(Expect::scalar(), Expect::listOf('scalar')),
+			'storage' => Expect::string(),
 			'editor' => Expect::string()->dynamic(),
 			'browser' => Expect::string()->dynamic(),
 			'errorTemplate' => Expect::string()->dynamic(),
@@ -83,7 +84,7 @@ class TracyExtension extends Nette\DI\CompilerExtension
 		$builder = $this->getContainerBuilder();
 
 		$options = (array) $this->config;
-		unset($options['bar'], $options['blueScreen'], $options['netteMailer']);
+		unset($options['bar'], $options['blueScreen'], $options['netteMailer'], $options['storage']);
 		if (isset($options['logSeverity'])) {
 			$res = 0;
 			foreach ((array) $options['logSeverity'] as $level) {
@@ -135,9 +136,18 @@ class TracyExtension extends Nette\DI\CompilerExtension
 				));
 			}
 
-			if (!$this->cliMode && ($name = $builder->getByType(Nette\Http\Session::class))) {
-				$initialize->addBody('$this->getService(?)->start();', [$name]);
-				$initialize->addBody('Tracy\Debugger::dispatch();');
+			if (!$this->cliMode) {
+				if ($this->config->storage === 'session') {
+					if ($name = $builder->getByType(Nette\Http\Session::class)) {
+						$initialize->addBody('$this->getService(?)->start();', [$name]);
+					}
+
+					$initialize->addBody('Tracy\Debugger::dispatch();');
+
+				} elseif ($this->config->storage !== null) {
+					$initialize->addBody('Tracy\Debugger::setStorage(new Tracy\FileSession(?));', [$this->config->storage]);
+					$initialize->addBody('Tracy\Debugger::dispatch();');
+				}
 			}
 		}
 

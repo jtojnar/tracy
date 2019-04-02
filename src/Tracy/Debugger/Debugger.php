@@ -235,6 +235,7 @@ class Debugger
 			'Logger/FireLogger',
 			'Logger/Logger',
 			'Session/SessionStorage',
+			'Session/FileSession',
 			'Session/NativeSession',
 			'Helpers',
 		] as $path) {
@@ -482,7 +483,8 @@ class Debugger
 	public static function getSessionStorage(): SessionStorage
 	{
 		if (!self::$sessionStorage) {
-			self::$sessionStorage = new NativeSession;
+			$dir = session_save_path() ?: ini_get('upload_tmp_dir') ?: sys_get_temp_dir() ?: self::$logDirectory;
+			self::$sessionStorage = $dir ? new FileSession($dir) : new NativeSession;
 		}
 
 		return self::$sessionStorage;
