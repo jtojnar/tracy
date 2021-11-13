@@ -30,6 +30,7 @@ class Bridge
 		}
 
 		Tracy\Debugger::$sourceMappers[] = [self::class, 'mapLatteSourceCode'];
+		$blueScreen->fileGenerators['latte'] = [self::class, 'generateNewLatteFileContents'];
 		$blueScreen->addAction([self::class, 'renderMemberAccessException']);
 		$blueScreen->addPanel([self::class, 'renderNeonError']);
 	}
@@ -94,6 +95,12 @@ class Bridge
 		$file = $m[1];
 		$line = $line && preg_match('#/\* line (\d+) \*/#', $lines[$line - 1], $m) ? (int) $m[1] : 0;
 		return ['file' => $file, 'line' => $line, 'label' => 'Latte', 'active' => true];
+	}
+
+
+	public static function generateNewLatteFileContents(string $file): ?string
+	{
+		return "{block content}\n\$END\$";
 	}
 
 
