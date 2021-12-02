@@ -96,6 +96,7 @@ class Bridge
 		}
 
 		$loc = $e->getTrace()[$e instanceof Nette\MemberAccessException ? 1 : 0];
+		$loc = Tracy\Debugger::mapSource($loc['file'], $loc['line']) ?? $loc;
 		if (preg_match('#Cannot (?:read|write to) an undeclared property .+::\$(\w+), did you mean \$(\w+)\?#A', $e->getMessage(), $m)) {
 			return [
 				'link' => Helpers::editorUri($loc['file'], $loc['line'], 'fix', '->' . $m[1], '->' . $m[2]),
