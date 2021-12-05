@@ -371,7 +371,7 @@ class Debugger
 			throw $e;
 
 		} elseif (
-			($severity & error_reporting()) 
+			($severity & error_reporting())
 			|| (is_int(self::$scream) ? $severity & self::$scream : self::$scream)
 		) {
 			self::getStrategy()->handleError($severity, $message, $file, $line, $context);
