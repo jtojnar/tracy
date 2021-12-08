@@ -324,6 +324,20 @@ class Helpers
 
 
 	/** @internal */
+	public static function isRedirect(): bool
+	{
+		return (bool) preg_match('#^Location:#im', implode("\n", headers_list()));
+	}
+
+
+	/** @internal */
+	public static function createId(): string
+	{
+		return bin2hex(random_bytes(5));
+	}
+
+
+	/** @internal */
 	public static function isCli(): bool
 	{
 		return PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg';
