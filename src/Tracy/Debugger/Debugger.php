@@ -456,7 +456,7 @@ class Debugger
 		if (empty(self::$strategy[self::$productionMode])) {
 			self::$strategy[self::$productionMode] = self::$productionMode
 				? new ProductionStrategy
-				: new DevelopmentStrategy(self::getBar(), self::getBlueScreen());
+				: new DevelopmentStrategy(self::getBar(), self::getBlueScreen(), new DeferredContent);
 		}
 
 		return self::$strategy[self::$productionMode];
