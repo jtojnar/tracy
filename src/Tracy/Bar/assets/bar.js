@@ -6,7 +6,7 @@ let panelZIndex = 20000,
 	maxAjaxRows = 3,
 	autoRefresh = true,
 	nonce = document.currentScript.getAttribute('nonce') || document.currentScript.nonce,
-	contentId = document.currentScript.dataset.id,
+	requestId = document.currentScript.dataset.id,
 	ajaxCounter = 1,
 	baseUrl = location.href.split('#')[0];
 
@@ -189,7 +189,7 @@ class Panel
 
 
 	savePosition() {
-		let key = this.id.split(':')[0]; // remove :contentId part
+		let key = this.id.split(':')[0]; // remove :requestId part
 		let pos = getPosition(this.elem);
 		if (this.is(Panel.WINDOW)) {
 			localStorage.setItem(key, JSON.stringify({window: true}));
@@ -686,7 +686,7 @@ let Tracy = window.Tracy = window.Tracy || {};
 Tracy.DebugPanel = Panel;
 Tracy.DebugBar = Bar;
 Tracy.Debug = Debug;
-Tracy.getAjaxHeader = () => contentId;
+Tracy.getAjaxHeader = () => requestId;
 
 Debug.setOptions({
 	panelZIndex: Tracy.panelZIndex,
